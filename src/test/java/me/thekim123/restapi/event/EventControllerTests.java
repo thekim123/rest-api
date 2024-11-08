@@ -2,6 +2,7 @@ package me.thekim123.restapi.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.thekim123.restapi.common.TestDescription;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -34,12 +35,13 @@ public class EventControllerTests {
     ObjectMapper objectMapper;
 
     @Test
+    @TestDescription("정상적으로 이벤트를 생성하는 테스트")
     public void createEvent() throws Exception {
         EventDto event = EventDto.builder()
                 .name("Spring")
                 .description("REST API Development with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2018, 11, 20, 23, 21))
-                .closeEnrollmentDateTime(LocalDateTime.of(2018, 11, 24, 12, 00))
+                .closeEnrollmentDateTime(LocalDateTime.of(2018, 11, 24, 12, 0))
                 .beginEventDateTime(LocalDateTime.of(2018, 11, 25, 14, 21))
                 .endEventDateTime(LocalDateTime.of(2018, 11, 26, 14, 21))
                 .basePrice(100)
@@ -64,6 +66,7 @@ public class EventControllerTests {
     }
 
     @Test
+    @TestDescription("입력 받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
                 .name("Spring")
@@ -93,6 +96,7 @@ public class EventControllerTests {
     }
 
     @Test
+    @TestDescription("입력 값이 비어있는 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Empty_Input() throws Exception {
         EventDto eventDto = EventDto.builder().build();
 
@@ -103,12 +107,13 @@ public class EventControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    @org.junit.Test
+    @Test
+    @TestDescription("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
                 .description("REST API Development with Spring")
-                .beginEnrollmentDateTime(LocalDateTime.of(2018, 11, 20, 23, 21))
+                .beginEnrollmentDateTime(LocalDateTime.of(2018, 11, 28, 23, 21))
                 .closeEnrollmentDateTime(LocalDateTime.of(2018, 11, 19, 12, 00))
                 .beginEventDateTime(LocalDateTime.of(2018, 11, 25, 14, 21))
                 .endEventDateTime(LocalDateTime.of(2018, 11, 26, 14, 21))
