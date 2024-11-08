@@ -1,5 +1,6 @@
 package me.thekim123.restapi.event;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,7 @@ public class EventControllerTests {
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
 
     }
+
     @Test
     public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
@@ -91,4 +93,14 @@ public class EventControllerTests {
     }
 
 
+    @Test
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+        EventDto eventDto = EventDto.builder().build();
+
+        this.mockMvc.perform(post("/api/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(eventDto))
+                )
+                .andExpect(status().isBadRequest());
+    }
 }
