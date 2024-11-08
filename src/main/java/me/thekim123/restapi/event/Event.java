@@ -31,6 +31,7 @@ public class Event {
     private boolean offline;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private EventStatus eventStatus = EventStatus.DRAFT;
 
 }

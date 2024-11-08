@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: rest-api
+
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
