@@ -1,7 +1,9 @@
 package me.thekim123.restapi.event;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import org.modelmapper.ModelMapper;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -38,9 +42,17 @@ public class EventController {
         }
 
         Event event = modelMapper.map(eventDto, Event.class);
+        event.update();
         Event newEvent = this.eventRepository.save(event);
-        URI createdUri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
-        return ResponseEntity.created(createdUri).body(event);
+        WebMvcLinkBuilder linkBuilder = linkTo(EventController.class).slash(newEvent.getId());
+        URI createdUri = linkBuilder.toUriComponentsBuilder().build().toUri();
+        List<Link> links = Arrays.asList(
+                linkBuilder.slash(event.getId()).withSelfRel(),
+                linkBuilder.withRel("query-events"),
+                linkBuilder.withRel("update-events")
+        );
+        EventResource eventResource = new EventResource(event, links);
+        return ResponseEntity.created(createdUri).body(eventResource);
     }
 
 
